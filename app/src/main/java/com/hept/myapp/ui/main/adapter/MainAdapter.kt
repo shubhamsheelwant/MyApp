@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapp.DropDownOptions
 import com.example.myapp.FormFields
 import com.hept.myapp.R
+import com.hept.myapp.ui.main.adapter.viewholder.*
 import com.hept.myapp.ui.main.view.MainActivity.Companion.DATE
 import com.hept.myapp.ui.main.view.MainActivity.Companion.DROP_DOWN
 import com.hept.myapp.ui.main.view.MainActivity.Companion.EDIT_BOX
@@ -63,6 +64,7 @@ class MainAdapter(private var context: Context, private val formData: List<FormF
             TYPE_LOGO -> {
                 val viewHolder = holder as LogoViewHolder
                 viewHolder.title.text = data.label
+
             }
             TYPE_DROP_DOWN -> {
                 val viewHolder = holder as DropDownViewHolder

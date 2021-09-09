@@ -15,9 +15,7 @@ import com.hept.myapp.data.api.RetrofitBuilder
 import com.hept.myapp.ui.base.ViewModelFactory
 import com.hept.myapp.ui.main.adapter.MainAdapter
 import com.hept.myapp.ui.main.viewmodel.MainViewModel
-import com.mindorks.retrofit.coroutines.utils.Status.ERROR
-import com.mindorks.retrofit.coroutines.utils.Status.LOADING
-import com.mindorks.retrofit.coroutines.utils.Status.SUCCESS
+import com.mindorks.retrofit.coroutines.utils.Status.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -31,7 +29,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupViewModel()
+        initListener()
         setupObservers()
+    }
+
+    private fun initListener() {
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = false
+            setupObservers()
+        }
     }
 
     /**

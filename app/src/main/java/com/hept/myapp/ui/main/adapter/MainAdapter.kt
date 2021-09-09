@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.myapp.DropDownOptions
 import com.example.myapp.FormFields
 import com.hept.myapp.R
@@ -17,39 +16,40 @@ import com.hept.myapp.ui.main.view.MainActivity.Companion.EDIT_BOX
 import com.hept.myapp.ui.main.view.MainActivity.Companion.LOGO
 import com.hept.myapp.ui.main.view.MainActivity.Companion.TEXT_AREA
 import com.hept.myapp.utils.DatePickerUtil
-import kotlin.collections.ArrayList
+
 
 class MainAdapter(private var context: Context, private val formData: List<FormFields>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     // This variable will hold the drop down data
-    var dropDownList = ArrayList<String>()
+    var taxOptionList = ArrayList<String>()
+    var modeOptionList = ArrayList<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view: View
         return if (viewType == TYPE_LOGO) {
             view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_item_logo, parent, false)
+                    .inflate(R.layout.layout_item_logo, parent, false)
             LogoViewHolder(view)
         } else if (viewType == TYPE_DROP_DOWN) {
             view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_item_dropdown, parent, false)
+                    .inflate(R.layout.layout_item_dropdown, parent, false)
             DropDownViewHolder(view)
         } else if (viewType == TYPE_EDIT_BOX) {
             view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_item_edit_box, parent, false)
+                    .inflate(R.layout.layout_item_edit_box, parent, false)
             EditBoxViewHolder(view)
         } else if (viewType == TYPE_DATE) {
             view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_item_date, parent, false)
+                    .inflate(R.layout.layout_item_date, parent, false)
             DateViewHolder(view)
         } else if (viewType == TYPE_TEXT_AREA) {
             view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_item_text_area, parent, false)
+                    .inflate(R.layout.layout_item_text_area, parent, false)
             TextAreaViewHolder(view)
         } else {
             view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_item_logo, parent, false)
+                    .inflate(R.layout.layout_item_logo, parent, false)
             LogoViewHolder(view)
         }
     }
@@ -63,13 +63,16 @@ class MainAdapter(private var context: Context, private val formData: List<FormF
             TYPE_LOGO -> {
                 val viewHolder = holder as LogoViewHolder
                 viewHolder.title.text = data.label
-                Glide.with(context).load(data.textAns).into(viewHolder.imagelogo)
             }
             TYPE_DROP_DOWN -> {
                 val viewHolder = holder as DropDownViewHolder
                 viewHolder.title.text = data.label
-                prepareSpinnerData(data.dropDownOptions)
-                setDropDownAdapter(viewHolder.dropDown, dropDownList)
+                prepareSpinnerData(data.label, data.dropDownOptions)
+                if (data.label.equals("Tax Exemption Status")) {
+                    setDropDownAdapter(viewHolder.dropDown, taxOptionList)
+                } else if (data.label.equals("Mode of Travel")) {
+                    setDropDownAdapter(viewHolder.dropDown, modeOptionList)
+                }
             }
             TYPE_EDIT_BOX -> {
                 val viewHolder = holder as EditBoxViewHolder
@@ -83,7 +86,7 @@ class MainAdapter(private var context: Context, private val formData: List<FormF
                 val viewHolder = holder as DateViewHolder
                 viewHolder.title.text = data.label
                 viewHolder.date.setOnClickListener {
-                    DatePickerUtil.showDatePicker(context,viewHolder.date)
+                    DatePickerUtil.showDatePicker(context, viewHolder.date)
                 }
             }
         }
@@ -92,9 +95,17 @@ class MainAdapter(private var context: Context, private val formData: List<FormF
     /**
      * This method will prepare data to be shown on dropdown
      */
-    private fun prepareSpinnerData(dropDownOptions: List<DropDownOptions>) {
-        dropDownOptions.forEachIndexed { index, dropDownOptions ->
-            dropDownList.add(dropDownOptions.viewText)
+    private fun prepareSpinnerData(label: String, dropDownOptions: List<DropDownOptions>) {
+        if (label.equals("Tax Exemption Status")) {
+            taxOptionList.clear()
+            dropDownOptions.forEachIndexed { index, dropDownOptions ->
+                taxOptionList.add(dropDownOptions.viewText)
+            }
+        } else if (label.equals("Mode of Travel")) {
+            modeOptionList.clear()
+            dropDownOptions.forEachIndexed { index, dropDownOptions ->
+                modeOptionList.add(dropDownOptions.viewText)
+            }
         }
     }
 
@@ -103,8 +114,8 @@ class MainAdapter(private var context: Context, private val formData: List<FormF
      */
     private fun setDropDownAdapter(spinnerView: Spinner, dropDownOptions: ArrayList<String>) {
         val adapter = ArrayAdapter(
-            context,
-            android.R.layout.simple_spinner_item, dropDownOptions
+                context,
+                android.R.layout.simple_spinner_item, dropDownOptions
         )
         spinnerView.adapter = adapter
     }

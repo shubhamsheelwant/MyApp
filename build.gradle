@@ -19,6 +19,11 @@ allprojects {
         google()
         jcenter()
     }
+    allprojects {
+        repositories {
+
+        }
+    }
 }
 
 task clean(type: Delete) {
